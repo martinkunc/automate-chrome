@@ -66,10 +66,17 @@ namespace ChromeAutomation
 
         public string Eval(string cmd)
         {
-            var json = @"{""method"":""Runtime.evaluate"",""params"":{""expression"":"""+cmd+@""",""objectGroup"":""console"",""includeCommandLineAPI"":true,""doNotPauseOnExceptions"":false,""returnByValue"":false},""id"":1}";
+            return Eval(cmd, false);
+        }
+	    public string Eval(string cmd, bool allowTopLevelAwait)
+        {
+            string awaitParam = "";
+            if (allowTopLevelAwait)  {
+                awaitParam = @"""replMode"":true,";
+            }
+            var json = @"{""method"":""Runtime.evaluate"",""params"":{""expression"":"""+cmd + @"""," + awaitParam + @"objectGroup"":""console"",""includeCommandLineAPI"":true,""doNotPauseOnExceptions"":false,""returnByValue"":false},""id"":1}";
             return this.SendCommand(json);
         }
-
         public string SendCommand(string cmd)
         {
             WebSocket4Net.WebSocket j = new WebSocket4Net.WebSocket(this.sessionWSEndpoint);
